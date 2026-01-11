@@ -41,3 +41,9 @@ Confidence scores below a defined threshold
 ---
 
 ## Example Anomaly Output
+{
+  "anomaly_type": "data_quality_issue",
+  "severity": "medium",
+  "summary": "Missing speaker or low confidence detected",
+  "recommended_action": "Review vendor output and OCR/extraction settings"
+}
