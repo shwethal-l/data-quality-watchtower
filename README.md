@@ -53,3 +53,14 @@ The Supabase schema and sample seed data are provided under:
 /supabase/schema.sql
 
 Running this SQL is sufficient to recreate the database.
+## How to Run (Under 15 Minutes)
+
+1. Create a Supabase project
+2. Run SQL from supabase/schema.sql
+3. Import the n8n workflow JSON
+4. Configure required environment variables
+5. Execute the workflow
+6. View detected anomalies via n8n output or UI placeholder
+## UI
+A minimal static UI is included under /ui to demonstrate how anomalies would be surfaced to users.
+The UI is intentionally simple to keep focus on backend reliability.
