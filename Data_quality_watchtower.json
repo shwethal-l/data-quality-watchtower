@@ -1,0 +1,88 @@
+{
+  "name": "Data_quality_watchtower",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "eb85e8e8-8935-43ed-bb16-a2b87aa3be04",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "=transcript_runs",
+        "limit": 10,
+        "filterType": "none"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "52bca798-7c4d-4fd5-b7fa-1dda867f2b73",
+      "name": "Get many rows",
+      "credentials": {
+        "supabaseApi": {
+          "id": "cG6hzk8NfNHaDjBv",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\nfor (const item of items) {\n  const row = item.json;\n\n  if (row.speaker_present === false || row.confidence_score < 0.6) {\n    results.push({\n      anomaly_type: \"data_quality_issue\",\n      severity: \"medium\",\n      summary: \"Missing speaker or low confidence detected\",\n      recommended_action: \"Review vendor output and OCR/extraction settings\",\n    });\n  }\n}\n\nreturn results.map(r => ({ json: r }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "9fb7c0fc-8eae-475b-9c58-651383790a49",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "67cf0ad4-09c0-407d-8dd5-f7c56f215ba3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dfcf21bbcd60cdc1f0efd285738ce4439d6f9f2559097f4a96c5977e0b93c8bc"
+  },
+  "id": "odXW7In_Joxp3WR-73-HN",
+  "tags": []
+}
