@@ -47,3 +47,9 @@ Confidence scores below a defined threshold
   "summary": "Missing speaker or low confidence detected",
   "recommended_action": "Review vendor output and OCR/extraction settings"
 }
+## Database Setup
+
+The Supabase schema and sample seed data are provided under:
+/supabase/schema.sql
+
+Running this SQL is sufficient to recreate the database.
