@@ -1,66 +1,87 @@
-# Data Quality Watchtower (AI-first Prototype)
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Data Quality Watchtower</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    h2 { margin-bottom: 12px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f4f4f4; text-align: left; }
+    .severity-medium { color: #d97706; font-weight: bold; }
+    .severity-low { color: #16a34a; }
+    .severity-high { color: #dc2626; font-weight: bold; }
+    .filter { margin-bottom: 12px; }
+  </style>
+</head>
+<body>
 
-## Overview
-Data Quality Watchtower is a lightweight AI-driven prototype that monitors structured data outputs
-(such as transcripts and extraction results) and automatically flags quality issues like missing fields
-and low confidence scores.
+  <h2>Data Quality Watchtower</h2>
 
-This project demonstrates how AI workflows can be used to proactively detect data quality risks
-before they impact downstream systems.
+  <div class="filter">
+    <label>
+      Severity:
+      <select id="severityFilter">
+        <option value="">All</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+    </label>
+  </div>
 
----
+  <table>
+    <thead>
+      <tr>
+        <th>Severity</th>
+        <th>Summary</th>
+        <th>Detected At</th>
+        <th>Recommended Action</th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
 
-## Problem Statement
-Modern AI pipelines (OCR, transcription, extraction) often fail silently:
-Missing speakers
-Low confidence scores
-Vendor inconsistencies
+  <script>
+    const SUPABASE_URL = "PASTE_SUPABASE_URL_HERE";
+    const SUPABASE_KEY = "PASTE_SUPABASE_ANON_KEY_HERE";
 
-These issues usually go unnoticed until they affect analytics or customers.
+    async function loadAnomalies() {
+      const severity = document.getElementById("severityFilter").value;
+      let url = ${SUPABASE_URL}/rest/v1/quality_anomalies?select=severity,summary,detected_at,recommended_action&order=detected_at.desc;
 
----
+      if (severity) {
+        url += &severity=eq.${severity};
+      }
 
-## Solution
-This prototype uses:
-**Supabase** as the data source
-**n8n** for workflow automation
-**JavaScript logic** to detect anomalies
+      const res = await fetch(url, {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: Bearer ${SUPABASE_KEY},
+        },
+      });
 
-The system scans incoming records and flags:
-Missing speaker information
-Confidence scores below a defined threshold
+      const data = await res.json();
+      const tbody = document.getElementById("rows");
+      tbody.innerHTML = "";
 
----
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="severity-${row.severity}">${row.severity}</td>
+          <td>${row.summary}</td>
+          <td>${new Date(row.detected_at).toLocaleString()}</td>
+          <td>${row.recommended_action}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
 
-## Architecture
-1. Data stored in Supabase (transcript_runs table)
-2. n8n workflow fetches records
-3. JavaScript logic evaluates quality rules
-4. Detected issues are returned as structured anomaly records
+    document.getElementById("severityFilter").addEventListener("change", loadAnomalies);
 
----
+    loadAnomalies();
+  </script>
 
-## Example Anomaly Output
-{
-  "anomaly_type": "data_quality_issue",
-  "severity": "medium",
-  "summary": "Missing speaker or low confidence detected",
-  "recommended_action": "Review vendor output and OCR/extraction settings"
-}
-## Database Setup
-
-The Supabase schema and sample seed data are provided under:
-/supabase/schema.sql
-
-Running this SQL is sufficient to recreate the database.
-## How to Run (Under 15 Minutes)
-
-1. Create a Supabase project
-2. Run SQL from supabase/schema.sql
-3. Import the n8n workflow JSON
-4. Configure required environment variables
-5. Execute the workflow
-6. View detected anomalies via n8n output or UI placeholder
-## UI
-A minimal static UI is included under /ui to demonstrate how anomalies would be surfaced to users.
-The UI is intentionally simple to keep focus on backend reliability.
+</body>
+</html>
