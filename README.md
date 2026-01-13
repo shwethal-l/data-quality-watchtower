@@ -44,8 +44,10 @@
   </table>
 
   <script>
-    const SUPABASE_URL = "https://rmlgkaxrpiodrywquveq.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJtbGdrYXhycGlvZHJ5d3F1dmVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxMDYxNTUsImV4cCI6MjA4MzY4MjE1NX0.P6wEHxPgF5L7wvjY1hJap3wzGHK8VJZmi6qIXFL80dk";
+    const SUPABASE_URL = "https://rmlgkaxrpiodrywquveq.supabase.co
+";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJtbGdrYXhycGlvZHJ5d3F1dmVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxMDYxNTUsImV4cCI6MjA4MzY4MjE1NX0.P6wEHxPgF5L7wvjY1hJap3wzGHK8VJZmi6qIXFL80dk
+";
 
     async function loadAnomalies() {
       const severity = document.getElementById("severityFilter").value;
